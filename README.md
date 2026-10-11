@@ -12,6 +12,7 @@ Published every week, each covering the week just completed.
 |---|---|---|
 | [01](week-01/report.md) | 2026-09-27 | CKB fundamentals, Cell model, CKB Academy lessons 1–2 |
 | [02](week-02/report.md) | 2026-10-04 | Beginner dApp tutorials on testnet, CCC SDK |
+| [03](week-03/report.md) | 2026-10-11 | CCC guides: wallets, transactions, signing, UDT, Spore, Node.js backend |
 
 ## Structure
 

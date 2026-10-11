@@ -1,0 +1,65 @@
+// Create UDT
+// import { ccc } from "@ckb-ccc/ccc";
+// import { render, signer } from "@ckb-ccc/playground";
+
+// // Type args = lock hash của chính ví bạn -> bạn là owner, mint được
+// const { script: ownerLock } = await signer.getRecommendedAddressObj();
+// const type = await ccc.Script.fromKnownScript(
+//   signer.client,
+//   ccc.KnownScript.XUdt,
+//   ownerLock.hash(),
+// );
+// console.log("UDT type args:", type.args);
+
+// const code = (
+//   await signer.client.getCellDeps(
+//     (await signer.client.getKnownScript(ccc.KnownScript.XUdt)).cellDeps,
+//   )
+// )[0].outPoint;
+// const udt = new ccc.udt.Udt(code, type);
+
+// let { res: tx } = await udt.mint(signer, [
+//   { to: ownerLock, amount: ccc.fixedPointFrom(1000) },
+// ]);
+// await tx.completeInputsByCapacity(signer);
+// await tx.completeFeeBy(signer);
+// await render(tx);
+// console.log("tx hash:", await signer.sendTransaction(tx));
+
+
+// Transfer the UDT to another address
+import { ccc } from "@ckb-ccc/ccc";
+import { render, signer } from "@ckb-ccc/playground";
+
+// Dùng token đã mint ở bước trước: args = lock hash của chính ví này
+const { script: ownerLock } = await signer.getRecommendedAddressObj();
+const type = await ccc.Script.fromKnownScript(
+  signer.client,
+  ccc.KnownScript.XUdt,
+  ownerLock.hash(),
+);
+const code = (
+  await signer.client.getCellDeps(
+    (await signer.client.getKnownScript(ccc.KnownScript.XUdt)).cellDeps,
+  )
+)[0].outPoint;
+
+const udt = new ccc.udt.Udt(code, type);
+
+const receiver = await signer.getRecommendedAddress();
+console.log(receiver);
+const { script: lock } = await ccc.Address.fromString(receiver, signer.client);
+
+let { res: tx } = await udt.transfer(signer, [
+  { to: lock, amount: ccc.fixedPointFrom(1) },
+]);
+await render(tx);
+
+tx = await udt.completeBy(tx, signer);
+await render(tx);
+
+await tx.completeInputsByCapacity(signer);
+await render(tx);
+
+await tx.completeFeeBy(signer);
+await render(tx);
