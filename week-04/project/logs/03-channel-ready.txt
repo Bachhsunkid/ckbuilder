@@ -1,0 +1,49 @@
+$ cd node1 && ./fnn-cli channel list_channels
+channels:
+- channel_id: 0xaab16a4b97161c9b794fd3c0618b0951ba5f7f3468f95ea5aba0624f0f1cc546
+  channel_outpoint: 0x003bfb0950181fbb66b5cda9a5e0f563681a04d9f43fd484fc5b3c278dc45b0b00000000
+  created_at: '0x1a14f636370'
+  enabled: true
+  failure_detail: null
+  funding_udt_type_script: null
+  is_acceptor: false
+  is_one_way: false
+  is_public: true
+  latest_commitment_transaction_hash: 0x64481582a394fdae6b7481ff3eea7a4b0d36c3cf975ac20f96fb124e0d227f6a
+  local_balance: '0x956257100'
+  offered_tlc_balance: '0x0'
+  pending_tlcs: []
+  pubkey: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+  received_tlc_balance: '0x0'
+  remote_balance: '0x0'
+  shutdown_transaction_hash: null
+  state:
+    state_name: ChannelReady
+  tlc_expiry_delta: '0xdbba00'
+  tlc_fee_proportional_millionths: '0x3e8'
+
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel list_channels
+channels:
+- channel_id: 0xaab16a4b97161c9b794fd3c0618b0951ba5f7f3468f95ea5aba0624f0f1cc546
+  channel_outpoint: 0x003bfb0950181fbb66b5cda9a5e0f563681a04d9f43fd484fc5b3c278dc45b0b00000000
+  created_at: '0x1a14f636371'
+  enabled: true
+  failure_detail: null
+  funding_udt_type_script: null
+  is_acceptor: true
+  is_one_way: false
+  is_public: true
+  latest_commitment_transaction_hash: 0xc564f2fd482deb7bc927cb891ebc90eed930bd504724cece9d52c7b699153d34
+  local_balance: '0x0'
+  offered_tlc_balance: '0x0'
+  pending_tlcs: []
+  pubkey: 030a65cc93852788eb6789bb94272c9a9f2b0e66b103bfd579102bc3794a93ec7b
+  received_tlc_balance: '0x0'
+  remote_balance: '0x956257100'
+  shutdown_transaction_hash: null
+  state:
+    state_name: ChannelReady
+  tlc_expiry_delta: '0xdbba00'
+  tlc_fee_proportional_millionths: '0x3e8'
+

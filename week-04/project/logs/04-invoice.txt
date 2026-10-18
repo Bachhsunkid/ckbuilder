@@ -1,0 +1,14 @@
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice new_invoice --amount 10000000000 --currency Fibt --description "test invoice"   # 100 CKB
+invoice:
+  amount: '0x2540be400'
+  currency: Fibt
+  data:
+    attrs:
+    - description: test invoice
+    - final_htlc_minimum_expiry_delta: '0x927c00'
+    - payee_public_key: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+    payment_hash: 0xb7f492990f557c78dedb206623df8b8bb9b1113fed9d04711a228a3cbc5e37a8
+    timestamp: '0x1a14f64f59f'
+  signature: 1006030c0a0e090b091118080a0f1205021b03111e1e06110511071b0f1f1910140a1d080d071903160414131f10190a1b1b0e100a02010e0e101f0f0d0b1709160b08160b171f05161a13130f10110416180e081209030510151204071f1a02121a1800121a1800
+invoice_address: fibt100000000001p4pt6skqnukgfw0pnm6vkex709dc9y2400mnrv9jpf2a8ejx4sq36667qcenen0wyj5g7lvnw4y74wha8c4x2x606m66xkguezfczrvyte3exz2tdl50penfc64hk8yp83s7py0dnaw8vvxsv6eh0zm2y9f22z6p926uch6yr96x9g2r0ee44llswzgxmx3xs8yktrhx4j6ec7gpvnj5dldyw2xtsqsxrv2wftf3cg20j9zmr377x3938m0les52agd8erky5nlse2mmws2zpwwsl0dthfktgkthl9k6nn0s3ykcwgjfr9s4jy8l6zj6cqj6cqc7gd45
+

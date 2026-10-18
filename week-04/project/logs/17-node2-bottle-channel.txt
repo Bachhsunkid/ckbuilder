@@ -1,0 +1,8 @@
+# bracer has no usable path to bottle right now, so connect node2 to bottle as well (node1 -> bottle -> node2)
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 peer connect_peer --pubkey <bottle> --address /dns4/bottle.fiber.channel/tcp/8119/p2p/QmXen3... --save true
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel open_channel --pubkey <bottle> --funding-amount 49900000000 --public true   # 499 CKB
+Error: RPC error (code -32000): Invalid parameter: Peer Pubkey(02b6d4e3ab86a2ca2fad6fae0ecb2e1e559e0b911939872a90abdda6d20302be71)'s feature not found, waiting for peer to send Init message
+# retry after the peer finished its Init handshake
+$ ./fnn-cli --url http://127.0.0.1:8237 channel open_channel --pubkey <bottle> --funding-amount 49900000000 --public true
+temporary_channel_id: 0xba945bab45b63922adc325f6da869982f967ea7b0307ddf6203ed40878f62adf
+

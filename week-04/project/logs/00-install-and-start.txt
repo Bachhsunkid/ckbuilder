@@ -1,0 +1,36 @@
+$ ls node1
+ckb
+config.yml
+fiber
+fnn
+fnn-cli
+node1.log
+
+$ ./fnn --version && ./fnn-cli --version && ./ckb-cli --version
+fnn Fiber v0.9.1 (9a561b3 2026-09-10)
+fnn-cli 0.9.1
+ckb-cli 1.12.0 (278c7be 2024-09-20)
+
+$ ./fnn-cli info | grep -E "version|pubkey|peers_count|chain_hash"   # node1 (RPC 8227)
+chain_hash: 0x10639e0895502b5688a6be8cf69460d76541bfa4821629d86d62ba0aae3f9606
+peers_count: '0x6'
+pubkey: 030a65cc93852788eb6789bb94272c9a9f2b0e66b103bfd579102bc3794a93ec7b
+version: 0.9.1
+
+$ ./fnn-cli --url http://127.0.0.1:8237 info | grep -E "version|pubkey|peers_count|chain_hash"   # node2 (RPC 8237)
+chain_hash: 0x10639e0895502b5688a6be8cf69460d76541bfa4821629d86d62ba0aae3f9606
+peers_count: '0x6'
+pubkey: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+version: 0.9.1
+
+$ ls node1/fiber node1/fiber/backups | head   # automatic online backups
+backups
+sk
+store
+1792333260690
+1792333336690
+1792333428665
+...
+db
+key
+sk

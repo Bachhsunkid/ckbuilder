@@ -1,0 +1,15 @@
+$ cd node1 && ./fnn-cli peer connect_peer --pubkey <node2_pubkey> --address "/ip4/127.0.0.1/tcp/8238" --save false
+
+$ ./fnn-cli peer list_peers
+peers:
+- address: /ip4/127.0.0.1/tcp/8238/p2p/QmNYRNFvkr2f5faTNsScYv1DNzLstVkZctykzuxEUh2LaN
+  pubkey: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+- address: /ip4/16.163.7.105/tcp/8228/p2p/QmdyQWjPtbK4NWWsvy8s69NGJaQULwgeQDT5ZpNDrTNaeV
+  pubkey: 0313dcf9cf18711b1b473a78ea56222dc44dcbfdf559d24dd937a0657d3bcb108f
+- address: /ip4/54.179.226.154/tcp/8228/p2p/Qmes1EBD4yNo9Ywkfe6eRw9tG1nVNGLDmMud1xJMsoYFKy
+  pubkey: 024714ca19abea4ddc0f3863ffdfb2e2cee76af87c477de4bc67c74a83f8140042
+
+
+$ ./fnn-cli channel open_channel --pubkey <node2_pubkey> --funding-amount 50000000000 --public true   # 500 CKB
+temporary_channel_id: 0x792b11e3d88dfaf786bed8286df63339620406114c58d576d71c00960e88f2f8
+

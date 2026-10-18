@@ -1,0 +1,3 @@
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice new_invoice --amount 100000000 --currency Fibt --description "multi-hop test" --expiry 3600   # 1 CKB
+    payment_hash: 0xbe908a4c33713e652d706fe856dc923439dc4baba54b9d9e4d48a3074bc3d6bd
+invoice_address: fibt1000000001phfzm53396wgfw0pmm6vhzrg9tg5x0z85rmnrvpnje2k689fy86g9wjyywc07z9f0dzhhd0zwfnuewk

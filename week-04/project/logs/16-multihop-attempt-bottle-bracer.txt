@@ -1,0 +1,7 @@
+$ ./fnn-cli payment send_payment --invoice <multi-hop invoice>   # node1 -> bottle ... bracer -> node2
+Error: RPC error (code -32000): Send payment error: Failed to build route, PathFind error: no path found
+
+$ ./fnn-cli payment get_payment --payment-hash 0xbe908a4c33713e652d706fe856dc923439dc4baba54b9d9e4d48a3074bc3d6bd
+failed_error: 'Send payment error: Failed to build route, PathFind error: no path found'
+fee: '0x0'
+status: Failed

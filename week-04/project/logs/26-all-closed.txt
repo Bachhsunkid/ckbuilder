@@ -1,0 +1,12 @@
+$ ./fnn-cli channel list_channels --include-closed true   (node1)
+0x1083ca0f19c7 peer 031b5762 oneway true Closed COOPERATIVE close_tx 0x15e08f53d60f05e57d0a69b36dfc61a50975830d7b569acf5f620003d92a148f
+0xd30dd05a923e peer 031b5762 oneway false Closed COOPERATIVE close_tx 0xe83abe018a45cdd2348d378a5dd3d79d971764483944c71295c0c7c0f6e29dc2
+0xafe2b43a167a peer 02b6d4e3 oneway false Closed COOPERATIVE close_tx 0xfd507af933d13c09bb1b219183926178ba3a2e8472f6f6dca140ab1d22e7a313
+0xaab16a4b9716 peer 031b5762 oneway false Closed COOPERATIVE close_tx 0x82fa4bda98abebd1eb10c8b92c755bcaa564b1dc00e042668ea3c882a16268fc
+
+$ ./fnn-cli --url http://127.0.0.1:8237 channel list_channels --include-closed true   (node2)
+0x1083ca0f19c7 peer 030a65cc oneway true Closed COOPERATIVE close_tx 0x15e08f53d60f05e57d0a69b36dfc61a50975830d7b569acf5f620003d92a148f
+0xd30dd05a923e peer 030a65cc oneway false Closed COOPERATIVE close_tx 0xe83abe018a45cdd2348d378a5dd3d79d971764483944c71295c0c7c0f6e29dc2
+0x9900399c3aae peer 02b6d4e3 oneway false Closed COOPERATIVE close_tx 0xe8e3ee22c45098529dcbcf752692f003dfb277d7eac39bad95fb72b661c9dd5c
+0xcedf425ef981 peer 0291a657 oneway false Closed COOPERATIVE close_tx 0x984cd4319e7ba493672d31ff755b9f34242a0e2be440ff1d25eaa638852bd977
+0xaab16a4b9716 peer 030a65cc oneway false Closed COOPERATIVE close_tx 0x82fa4bda98abebd1eb10c8b92c755bcaa564b1dc00e042668ea3c882a16268fc

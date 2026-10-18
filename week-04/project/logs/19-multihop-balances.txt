@@ -1,0 +1,11 @@
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "pubkey|local_balance|remote_balance"   # after multi-hop (node1 side)
+  local_balance: '0x94a382860'
+  pubkey: 02b6d4e3ab86a2ca2fad6fae0ecb2e1e559e0b911939872a90abdda6d20302be71
+  remote_balance: '0x389ff1ea0'
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel list_channels | grep -E "pubkey|local_balance|remote_balance"   # (node2 side)
+  local_balance: '0x956257100'
+  pubkey: 02b6d4e3ab86a2ca2fad6fae0ecb2e1e559e0b911939872a90abdda6d20302be71
+  remote_balance: '0x37e11d600'
+  local_balance: '0x9502f9000'
+  pubkey: 0291a6576bd5a94bd74b27080a48340875338fff9f6d6361fe6b8db8d0d1912fcc
+  remote_balance: '0x38407b700'

@@ -1,0 +1,9 @@
+# preimage generated locally; payment_hash = sha256(preimage)
+preimage     = 0x2435f5dcc0d1800f34fd3d9b692f223076e040d53362843e2af2808adf2c6601
+payment_hash = 0xb07ddf976eb9e3a07a197155bf5183b1e6c61fc95546307c5994491e45a93351
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice new_invoice --amount 5000000000 --currency Fibt --payment-hash $HASH --hash-algorithm sha256 --expiry 3600 --description "hold invoice demo"   # 50 CKB
+  amount: '0x12a05f200'
+    - hash_algorithm: sha256
+    payment_hash: 0xb07ddf976eb9e3a07a197155bf5183b1e6c61fc95546307c5994491e45a93351
+invoice_address: fibt50000000001pccuuvw33c7gfw0pmm6vhr72eyzu4mx40eldw0pszj8ytpe0rdn8rdyxgjqsa4csxuz3g0sc7epj595aqltcy8rj53u4y6ewpy6283u5jtm3q7vuzeyv0ag0cpsqua76c9hdd0n2euqq4zp3cxuec8z83n8g77yh9ex5d2p8pcncqgtyvmw8e56292e65u0jwkcn5y45f0ecafm5agh2g4tmd93yjaaf024qgx7jmkkdy9stprgzy3jqms935rahj83hzltpgvngq5pn6rrufjdvpulcqeunrv2r4g5un23sza55yjgqam70vsgwdwnekr3nh9znp35ecwrrjvj34gt9umyf33qqmg3u5x

@@ -1,0 +1,21 @@
+# 1) try a WRONG preimage first
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice settle_invoice --payment-hash $HASH --payment-preimage 0x00..00
+Error: RPC error (code -32000): Hash mismatch
+
+# 2) settle with the correct preimage
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice settle_invoice --payment-hash $HASH --payment-preimage $PRE
+{}
+
+
+$ ./fnn-cli --url http://127.0.0.1:8237 invoice get_invoice --payment-hash $HASH   # payee
+status: Paid
+
+$ ./fnn-cli payment get_payment --payment-hash $HASH   # payer
+failed_error: null
+payment_preimage: 0x2435f5dcc0d1800f34fd3d9b692f223076e040d53362843e2af2808adf2c6601
+status: Success
+
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "local_balance|remote_balance"
+  local_balance: '0x5d8139b00'
+  offered_tlc_balance: '0x0'
+  remote_balance: '0x37e11d600'

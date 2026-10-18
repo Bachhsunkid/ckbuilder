@@ -1,0 +1,27 @@
+# second hold invoice (20 CKB), this time the seller cancels
+payment_hash = 0x53a678aa6e4a2b6b563003b5f058a1cb92c96f87dddad7f0847705fafcd94be4
+$ cd node1 && ./fnn-cli payment send_payment --invoice "<hold invoice>"
+status: Created
+
+$ ./fnn-cli --url http://127.0.0.1:8237 invoice get_invoice --payment-hash $HASH2
+status: Received
+
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "local_balance|offered_tlc"   # 20 CKB locked
+  local_balance: '0x5d8139b00'
+  offered_tlc_balance: '0x77359400'
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice cancel_invoice --payment-hash $HASH2
+invoice:
+  amount: '0x77359400'
+  currency: Fibt
+
+$ ./fnn-cli --url http://127.0.0.1:8237 invoice get_invoice --payment-hash $HASH2
+status: Cancelled
+
+$ cd node1 && ./fnn-cli payment get_payment --payment-hash $HASH2
+failed_error: InvoiceCancelled
+status: Failed
+
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "local_balance|offered_tlc"   # back to 251 CKB
+  local_balance: '0x5d8139b00'
+  offered_tlc_balance: '0x0'

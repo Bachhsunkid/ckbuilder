@@ -1,0 +1,15 @@
+$ cd node1 && ./fnn-cli channel list_channels   # the one-way channel (initiator side)
+  is_acceptor: false
+  is_one_way: true
+  is_public: false
+  local_balance: '0x9502f9000'
+  remote_balance: '0x0'
+    state_name: ChannelReady
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel list_channels   # same channel (acceptor side)
+  is_acceptor: true
+  is_one_way: true
+  is_public: false
+  local_balance: '0x0'
+  remote_balance: '0x9502f9000'
+    state_name: ChannelReady

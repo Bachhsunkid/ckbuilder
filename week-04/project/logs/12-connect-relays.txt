@@ -1,0 +1,8 @@
+$ cd node1 && ./fnn-cli peer connect_peer --pubkey <bottle> --address /dns4/bottle.fiber.channel/tcp/8119/p2p/QmXen3... --save true
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 peer connect_peer --pubkey <bracer> --address /dns4/bracer.fiber.channel/tcp/8119/p2p/QmbKyz... --save true
+
+$ ./fnn-cli peer list_peers | grep pubkey   (node1)
+  pubkey: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+  pubkey: 0313dcf9cf18711b1b473a78ea56222dc44dcbfdf559d24dd937a0657d3bcb108f
+$ ./fnn-cli --url http://127.0.0.1:8237 peer list_peers | grep pubkey   (node2)
+  pubkey: 030a65cc93852788eb6789bb94272c9a9f2b0e66b103bfd579102bc3794a93ec7b

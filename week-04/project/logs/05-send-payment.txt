@@ -1,0 +1,21 @@
+$ cd node1 && ./fnn-cli payment send_payment --invoice "fibt1000000000..."
+created_at: '0x1a14f6506d6'
+custom_records: null
+failed_error: null
+fee: '0x0'
+last_updated_at: '0x1a14f6506d6'
+payment_hash: 0xb7f492990f557c78dedb206623df8b8bb9b1113fed9d04711a228a3cbc5e37a8
+payment_preimage: null
+status: Created
+
+
+$ ./fnn-cli payment get_payment --payment-hash 0xb7f492990f557c78dedb206623df8b8bb9b1113fed9d04711a228a3cbc5e37a8
+created_at: '0x1a14f6506d6'
+custom_records: null
+failed_error: null
+fee: '0x0'
+last_updated_at: '0x1a14f6506d6'
+payment_hash: 0xb7f492990f557c78dedb206623df8b8bb9b1113fed9d04711a228a3cbc5e37a8
+payment_preimage: 0xc69dbe95e6645beae44192d1cb83c2f1964b47412e28dd093941b639b4bdfbc7
+status: Success
+

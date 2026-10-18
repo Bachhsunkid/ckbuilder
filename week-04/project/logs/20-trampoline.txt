@@ -1,0 +1,13 @@
+
+$ cd node1 && ./fnn-cli payment send_payment --invoice <invoice> --trampoline-hops <bottle_pubkey> --max-fee-amount 10000000   # 0.1 CKB fee budget  (bare pubkey, not a JSON array)
+Error: Invalid trampoline_hops JSON: invalid number at line 1 column 2
+
+$ cd node1 && ./fnn-cli payment send_payment --invoice <invoice> --trampoline-hops '["<bottle_pubkey>"]' --max-fee-amount 10000000   # 0.1 CKB fee budget
+fee: '0x7a120'
+payment_hash: 0xdd8e99b375e57b3b6f5bd46034e3c425d68bbcfb8a7f554f6aee635361125ba7
+status: Created
+
+$ ./fnn-cli payment get_payment --payment-hash 0xdd8e99b375e57b3b6f5bd46034e3c425d68bbcfb8a7f554f6aee635361125ba7
+failed_error: null
+fee: '0x7a120'
+status: Success

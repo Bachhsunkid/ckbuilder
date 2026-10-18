@@ -1,0 +1,7 @@
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <node2> --funding-amount 49900000000 --public true --one-way
+temporary_channel_id: 0x3c96f7f766a85efce1b758a826aa64072b97cdb9d89421968a496217e4941e57
+
+
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <node2> --funding-amount 49900000000 --one-way
+temporary_channel_id: 0x22a3ba7f13c642d253697ace0d7096dea25634fa97306b66e766fe8bcb27cdb0
+

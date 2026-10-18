@@ -1,0 +1,6 @@
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <bottle> --funding-amount 49900000000 --public true   # 499 CKB
+temporary_channel_id: 0x0f7e68986b8b83a1c4aab1f80f2fb406ac127ffba722bef07a095bdcb28d7b11
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel open_channel --pubkey <bracer> --funding-amount 49900000000 --public true   # 499 CKB
+temporary_channel_id: 0x663cef2819983cf49b07ce70ee8e81e682b0d8f54d1fca598203ae859307a891
+

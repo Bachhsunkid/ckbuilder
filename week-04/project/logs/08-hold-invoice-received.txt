@@ -1,0 +1,17 @@
+$ cd node1 && ./fnn-cli payment send_payment --invoice "fibt500000000..."
+payment_hash: 0xb07ddf976eb9e3a07a197155bf5183b1e6c61fc95546307c5994491e45a93351
+status: Created
+
+$ cd node1 && ./fnn-cli payment get_payment --payment-hash $HASH      # payer side
+failed_error: null
+payment_preimage: null
+status: Inflight
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 invoice get_invoice --payment-hash $HASH     # payee side
+invoice_address: fibt50000000001pccuuvw33c7gfw0pmm6vhr72eyzu4mx40eldw0pszj8ytpe0
+status: Received
+
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "balance|pending_tlcs"   # funds are locked in a TLC
+  local_balance: '0x702198d00'
+  offered_tlc_balance: '0x12a05f200'
+  pending_tlcs:

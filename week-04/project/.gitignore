@@ -1,0 +1,8 @@
+# throwaway testnet keys, node state, downloaded binaries
+**/ckb/
+**/fiber/
+**/fnn
+**/fnn-cli
+**/ckb-cli
+**/*.log
+**/.ckb-cli/

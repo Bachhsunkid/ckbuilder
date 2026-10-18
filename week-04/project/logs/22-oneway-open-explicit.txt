@@ -1,0 +1,12 @@
+# NOTE: the bare `--one-way` flag from the docs did NOT make a one-way channel in fnn-cli 0.9.1 (it takes an optional value that defaults to false).
+# The first attempt above opened a normal public channel; passing an explicit value works:
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <node2> --funding-amount 49900000000 --public true --one-way true
+Error: RPC error (code -32000): Invalid parameter: An one-way channel cannot be public
+
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <node2> --funding-amount 49900000000 --one-way true
+Error: RPC error (code -32000): Invalid parameter: An one-way channel cannot be public
+
+# channels default to public, so a one-way channel needs an explicit --public false
+$ cd node1 && ./fnn-cli channel open_channel --pubkey <node2> --funding-amount 49900000000 --public false --one-way true
+temporary_channel_id: 0x3f6f4216e11ef0bf33dfb96d6336ee71ededc52eb75c307aefcbe1e51f717838
+

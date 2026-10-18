@@ -1,0 +1,17 @@
+$ cd node1 && ./fnn-cli payment send_payment --invoice <invoice> --dry-run true      # preview route + fee, no TLC created
+fee: '0x186a0'
+status: Created
+
+$ cd node1 && ./fnn-cli payment send_payment --invoice <invoice>
+fee: '0x186a0'
+payment_hash: 0x96ee4a88b454b2ef854c133542799b9bf14bda8870dcf3fad7f5a57e94b51a0d
+status: Created
+
+$ cd node1 && ./fnn-cli payment get_payment --payment-hash 0x96ee4a88b454b2ef854c133542799b9bf14bda8870dcf3fad7f5a57e94b51a0d
+failed_error: null
+fee: '0x186a0'
+payment_preimage: 0x0e997365ebccb3f691c524be5b2f7bbc7325853d0d6e22dd8f1490ca8e538751
+status: Success
+
+$ node2: invoice get_invoice
+status: Paid

@@ -1,0 +1,77 @@
+$ ./fnn --version && ./fnn-cli --version
+fnn Fiber v0.9.1 (9a561b3 2026-09-10)
+fnn-cli 0.9.1
+
+$ cd node1 && ./fnn-cli info
+addresses: []
+auto_accept_channel_ckb_funding_amount: '0x24e160300'
+chain_hash: 0x10639e0895502b5688a6be8cf69460d76541bfa4821629d86d62ba0aae3f9606
+channel_count: '0x0'
+commit_hash: 9a561b3 2026-09-10
+default_funding_lock_script:
+  args: 0xd1985358ffaf7d38ec919ed390e8f42d92735569
+  code_hash: 0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
+  hash_type: type
+features:
+- GOSSIP_QUERIES_REQUIRED
+- BASIC_MPP_REQUIRED
+- TRAMPOLINE_ROUTING_REQUIRED
+node_name: null
+open_channel_auto_accept_min_ckb_funding_amount: '0x2540be400'
+peers_count: '0x2'
+pending_channel_count: '0x0'
+pubkey: 030a65cc93852788eb6789bb94272c9a9f2b0e66b103bfd579102bc3794a93ec7b
+tlc_expiry_delta: '0xdbba00'
+tlc_fee_proportional_millionths: '0x3e8'
+tlc_min_value: '0x0'
+udt_cfg_infos:
+- auto_accept_amount: '0x3b9aca00'
+  cell_deps:
+  - type_id:
+      args: 0x97d30b723c0b2c66e9cb8d4d0df4ab5d7222cbb00d4a9a2055ce2e5d7f0d8b0f
+      code_hash: '0x00000000000000000000000000000000000000000000000000545950455f4944'
+      hash_type: type
+  name: RUSD
+  script:
+    args: 0x878fcc6f1f08d48e87bb1c3b3d5083f23f8a39c5d5c764f253b55b998526439b
+    code_hash: 0x1142755a044bf2ee358cba9f2da187ce928c91cd4dc8692ded0337efa677d21a
+    hash_type: type
+version: 0.9.1
+
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 info
+addresses: []
+auto_accept_channel_ckb_funding_amount: '0x24e160300'
+chain_hash: 0x10639e0895502b5688a6be8cf69460d76541bfa4821629d86d62ba0aae3f9606
+channel_count: '0x0'
+commit_hash: 9a561b3 2026-09-10
+default_funding_lock_script:
+  args: 0xfae4a35c961d554a6d1919fc7d59fdae027b9d52
+  code_hash: 0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
+  hash_type: type
+features:
+- GOSSIP_QUERIES_REQUIRED
+- BASIC_MPP_REQUIRED
+- TRAMPOLINE_ROUTING_REQUIRED
+node_name: null
+open_channel_auto_accept_min_ckb_funding_amount: '0x2540be400'
+peers_count: '0x2'
+pending_channel_count: '0x0'
+pubkey: 031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab
+tlc_expiry_delta: '0xdbba00'
+tlc_fee_proportional_millionths: '0x3e8'
+tlc_min_value: '0x0'
+udt_cfg_infos:
+- auto_accept_amount: '0x3b9aca00'
+  cell_deps:
+  - type_id:
+      args: 0x97d30b723c0b2c66e9cb8d4d0df4ab5d7222cbb00d4a9a2055ce2e5d7f0d8b0f
+      code_hash: '0x00000000000000000000000000000000000000000000000000545950455f4944'
+      hash_type: type
+  name: RUSD
+  script:
+    args: 0x878fcc6f1f08d48e87bb1c3b3d5083f23f8a39c5d5c764f253b55b998526439b
+    code_hash: 0x1142755a044bf2ee358cba9f2da187ce928c91cd4dc8692ded0337efa677d21a
+    hash_type: type
+version: 0.9.1
+

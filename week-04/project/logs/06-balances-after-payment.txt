@@ -1,0 +1,15 @@
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "balance|state_name"
+  is_acceptor: false
+  local_balance: '0x702198d00'
+  offered_tlc_balance: '0x0'
+  received_tlc_balance: '0x0'
+  remote_balance: '0x2540be400'
+    state_name: ChannelReady
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel list_channels | grep -E "balance|state_name"
+  is_acceptor: true
+  local_balance: '0x2540be400'
+  offered_tlc_balance: '0x0'
+  received_tlc_balance: '0x0'
+  remote_balance: '0x702198d00'
+    state_name: ChannelReady

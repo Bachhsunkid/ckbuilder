@@ -1,0 +1,13 @@
+$ cd node1 && ./fnn-cli channel list_channels | grep -E "channel_outpoint|pubkey|local_balance|remote_balance|state_name"
+  channel_outpoint: 0xf05242544942678e5af588f267bd933875510b5311a0f0c2dcd9b7f638b15cd700000000
+  local_balance: '0x9502f9000'
+  pubkey: 02b6d4e3ab86a2ca2fad6fae0ecb2e1e559e0b911939872a90abdda6d20302be71
+  remote_balance: '0x38407b700'
+    state_name: ChannelReady
+
+$ cd node2 && ./fnn-cli --url http://127.0.0.1:8237 channel list_channels | grep -E "channel_outpoint|pubkey|local_balance|remote_balance|state_name"
+  channel_outpoint: 0xcfeb524517662f1e080e09f5c63206d0b8a26f63e05713f307b5d357634ae06d00000000
+  local_balance: '0x9502f9000'
+  pubkey: 0291a6576bd5a94bd74b27080a48340875338fff9f6d6361fe6b8db8d0d1912fcc
+  remote_balance: '0x38407b700'
+    state_name: ChannelReady

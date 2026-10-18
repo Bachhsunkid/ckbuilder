@@ -1,0 +1,11 @@
+# force the route onto the one-way channel with build_router + channel_outpoint
+$ forward: node1 -> node2, 10 CKB keysend
+{"jsonrpc":"2.0","id":1,"result":{"router_hops":[{"target":"031b5762997ec98e6d943646c1f21d90c02f7047dd483d0f7d58255c9381cb09ab","channel_outpoint":"0x9f71a445ba224c2badb745b95139eb4998d1477d9521cc1c58
+{'status': 'Created', 'fee': '0x0', 'payment_hash': '0xd11c588fb104362fd8aba7e92a2b3f899c9639917204a17bd82b17d290135a4e'}
+
+$ node1 channel after forward payment
+  local_balance: '0x91494c600'
+  remote_balance: '0x3b9aca00'
+
+$ reverse: node2 -> node1 over the same channel, 1 CKB keysend
+{"jsonrpc":"2.0","id":3,"error":{"code":-32000,"message":"Network Graph error: PathFind error: no path found"}}

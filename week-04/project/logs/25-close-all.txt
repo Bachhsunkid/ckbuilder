@@ -1,0 +1,6 @@
+$ node1 shutdown_channel 0x1083ca0f19c7f594351820978a540b4ff87bf70967275195796e74f0d8859ee1  (peer 031b5762, one_way=true)
+$ node1 shutdown_channel 0xafe2b43a167afcc7a9420326dcbf946e32ffecab33cee6249a0807ff61f37eee  (peer 02b6d4e3, one_way=false)
+$ node2 shutdown_channel 0x1083ca0f19c7f594351820978a540b4ff87bf70967275195796e74f0d8859ee1  (peer 030a65cc, one_way=true)
+Error: RPC error (code -32000): Invalid state: Trying to send shutdown message while in invalid state ShuttingDown(ShuttingDownFlags(OUR_SHUTDOWN_SENT | THEIR_SHUTDOWN_SENT | DROPPING_PENDING))
+$ node2 shutdown_channel 0x9900399c3aae40cb0b4e2b533de2ea3b53975e8fb942f11f6c82bb66c74d1569  (peer 02b6d4e3, one_way=false)
+$ node2 shutdown_channel 0xcedf425ef981e5f561c3cf2f9cd674b0049d7f34a8b0a3c218423ddebc440933  (peer 0291a657, one_way=false)

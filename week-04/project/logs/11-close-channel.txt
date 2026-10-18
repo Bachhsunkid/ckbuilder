@@ -1,0 +1,5 @@
+$ cd node1 && ./fnn-cli channel shutdown_channel --channel-id <channel_id> --close-script <default_funding_lock_script> --fee-rate 1000 --force false
+  local_balance: '0x5d8139b00'
+  shutdown_transaction_hash: null
+    state_flags: WAITING_COMMITMENT_CONFIRMATION
+    state_name: ShuttingDown
