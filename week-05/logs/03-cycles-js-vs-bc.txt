@@ -1,0 +1,4 @@
+bundle dist/time-hash-lock.bc:
+    ║ All cycles: 13795088(13.2M)
+bundle dist/time-hash-lock.js:
+    ║ All cycles: 44032580(42.0M)

@@ -1,0 +1,16 @@
+
+> project@0.1.0 build
+> node scripts/build-all.js
+
+Building 1 contract(s): time-hash-lock
+
+📦 Building contract: time-hash-lock
+Building time-hash-lock from contracts/time-hash-lock/src/index.ts...
+  📦 Bundling with esbuild with release settings...
+  🔧 Compiling to bytecode...
+  ✅ Contract 'time-hash-lock' built successfully!
+     📄 JavaScript: dist/time-hash-lock.js
+     🔗 Bytecode: dist/time-hash-lock.bc
+✅ Successfully built: time-hash-lock with release version
+
+🎉 All contracts built successfully!

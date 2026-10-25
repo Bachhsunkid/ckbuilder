@@ -1,0 +1,11 @@
+[[cells]]
+name = "time-hash-lock.bc"
+enable_type_id = true
+
+  [cells.location]
+  file = "/Users/trinhbach/Workspace/working/ckb/ckbuilder/week-05/project/dist/time-hash-lock.bc"
+
+[lock]
+code_hash = "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+args = "0x56ece0649668bfebfcd9aed395088b9f3dd3242f"
+hash_type = "type"

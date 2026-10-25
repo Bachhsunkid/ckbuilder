@@ -1,0 +1,38 @@
+  console.log
+    LOCK tx: 0x20c32d5479b1fc339b4eb2afb04612f0e66b14874a695bbfd2dcac0e6a1c45e7  (cell 0 unlock-at 1792922410, cell 1 unlock-at 1792927810)
+
+      at Object.<anonymous> (tests/time-hash-lock.testnet.test.ts:74:13)
+
+  console.log
+    WRONG PASSPHRASE -> Error: Client request error TransactionFailedToVerify: Verification failed Script(TransactionScriptError { source: Inputs[0].Lock, cause: ValidationFailure: see error code 3 on page https://nervosnetwork.github.io/ckb-script-error-codes/by-type-hash/3e9b6bead927bef62fcb56f0c79f4fbd1b739f32dd222beac10d346f2918bed7.html#3 })
+
+      at Object.<anonymous> (tests/time-hash-lock.testnet.test.ts:80:13)
+
+  console.log
+    SINCE TOO LOW -> Error: Client request error TransactionFailedToVerify: Verification failed Script(TransactionScriptError { source: Inputs[0].Lock, cause: ValidationFailure: see error code 4 on page https://nervosnetwork.github.io/ckb-script-error-codes/by-type-hash/3e9b6bead927bef62fcb56f0c79f4fbd1b739f32dd222beac10d346f2918bed7.html#4 })
+
+      at Object.<anonymous> (tests/time-hash-lock.testnet.test.ts:86:13)
+
+  console.log
+    TOO EARLY -> Error: Client request error TransactionFailedToVerify: Verification failed Transaction(Immature(Inputs[0]): the transaction is immature because of the since requirement)
+
+      at Object.<anonymous> (tests/time-hash-lock.testnet.test.ts:92:13)
+
+  console.log
+    UNLOCK tx: 0x96d068aa6678c25b86d99ebb8428077d42824918489a3ff8cccc976e8f1b543c
+
+      at Object.<anonymous> (tests/time-hash-lock.testnet.test.ts:99:13)
+
+PASS tests/time-hash-lock.testnet.test.ts (61.689 s)
+  time-hash-lock on testnet
+    ✓ lock two cells: one already unlockable, one for 30 minutes from now (40803 ms)
+    ✓ wrong passphrase is rejected by the script (error 3) (340 ms)
+    ✓ since below the minimum is rejected by the script (error 4) (404 ms)
+    ✓ right passphrase but the chain has not reached since yet is rejected by the node (immature) (279 ms)
+    ✓ right passphrase and a reached since unlocks the cell (18741 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        61.719 s
+Ran all test suites matching /tests\/time-hash-lock.testnet/i.

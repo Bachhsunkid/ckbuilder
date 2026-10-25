@@ -14,6 +14,7 @@ Published every week, each covering the week just completed.
 | [02](week-02/report.md) | 2026-10-04 | Beginner dApp tutorials on testnet, CCC SDK |
 | [03](week-03/report.md) | 2026-10-11 | CCC guides: wallets, transactions, signing, UDT, Spore, Node.js backend |
 | [04](week-04/report.md) | 2026-10-18 | Fiber Network: two local nodes on testnet, channels, payments, hold invoices, multi-hop |
+| [05](week-05/report.md) | 2026-10-25 | First Script in TypeScript: passphrase + `since` lock, tests, debugger, testnet deploy, Type ID upgrade |
 
 ## Structure
 

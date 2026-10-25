@@ -1,0 +1,14 @@
+$ ckb-debugger --tx-file txs/unlock-ok.json --cell-index 0 --cell-type input --script-group-type lock
+Run result: 0
+All cycles: 13795088(13.2M)
+
+$ ckb-debugger --tx-file txs/wrong-passphrase.json --cell-index 0 --cell-type input --script-group-type lock
+Script log: [DEBUG] passphrase hash mismatch
+Run result: 3
+All cycles: 13710232(13.1M)
+
+$ ckb-debugger --tx-file txs/wrong-metric.json --cell-index 0 --cell-type input --script-group-type lock
+Script log: [DEBUG] since 2000000000 uses another metric than 4611686020227387904
+Run result: 5
+All cycles: 13808249(13.2M)
+

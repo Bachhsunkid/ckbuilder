@@ -1,0 +1,13 @@
+  console.log
+    PROBE -> Error: Client request error TransactionFailedToVerify: Verification failed Script(TransactionScriptError { source: Inputs[0].Lock, cause: ValidationFailure: see error code 4 on page https://nervosnetwork.github.io/ckb-script-error-codes/by-type-hash/3e9b6bead927bef62fcb56f0c79f4fbd1b739f32dd222beac10d346f2918bed7.html#4 })
+
+      at Object.<anonymous> (tests/probe.testnet.test.ts:28:13)
+
+PASS tests/probe.testnet.test.ts
+  ✓ probe: wrong-metric since on a cell locked before the upgrade (753 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.863 s, estimated 3 s
+Ran all test suites matching /tests\/probe.testnet/i.

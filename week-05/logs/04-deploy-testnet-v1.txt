@@ -1,0 +1,19 @@
+🚀 Preparing to deploy 1 contract(s):
+   📄 time-hash-lock.bc
+
+   📁 Deployment artifacts will be saved to: /Users/trinhbach/Workspace/working/ckb/ckbuilder/week-05/project/deployment
+   🌐 Network: testnet
+   🔑 Using custom private key
+   🔄 Type ID: enabled (upgradable)
+contract time-hash-lock.bc deployed, tx hash: 0x6f3634fd41c590751dd36dfc000fd8ec076ec447f46e8bfb905daa83e000a6a6
+wait for tx confirmed on-chain...
+tx committed.
+
+📦 Saving deployment artifacts for 1 contract(s)...
+- 📄 Saving artifacts for time-hash-lock.bc...
+- time-hash-lock.bc deployment.toml file /Users/trinhbach/Workspace/working/ckb/ckbuilder/week-05/project/deployment/testnet/time-hash-lock.bc/deployment.toml generated successfully.
+- Migration json file /Users/trinhbach/Workspace/working/ckb/ckbuilder/week-05/project/deployment/testnet/time-hash-lock.bc/migrations/2026-10-25-175908.json generated successfully.
+- ✅ Successfully saved artifacts for time-hash-lock.bc
+- 📄 Script info file generated: /Users/trinhbach/Workspace/working/ckb/ckbuilder/week-05/project/deployment/scripts.json
+
+🎉 All deployment artifacts saved successfully!
