@@ -4,18 +4,21 @@ import { HighLevel, bytesEq, hashCkb, log } from '@ckb-js-std/core';
 // Lock script args (after the 35 bytes ckb-js-vm keeps for its loader):
 //   [0..32)  ckb-blake2b hash of the secret passphrase
 //   [32..40) minimum `since`, little-endian u64, same encoding as CellInput.since
+//   [40..72) CKB script hash every output must use as its lock
 // Unlocking needs: witness.lock == passphrase, and every input of this script group
 // to carry a `since` that is at least as far as the minimum, in the same metric.
 
 const VM_LOADER_ARGS = 35;
 const HASH_LEN = 32;
 const SINCE_LEN = 8;
+const LOCK_HASH_LEN = 32;
 
 const ERR_ARGS = 1;
 const ERR_WITNESS = 2;
 const ERR_PASSPHRASE = 3;
 const ERR_SINCE = 4;
 const ERR_SINCE_METRIC = 5; // added in v2: tells a wrong metric apart from a too-early since
+const ERR_OUTPUT_LOCK = 6;
 
 // top 3 bits: relative flag + metric (block number / epoch / timestamp); low 56 bits: value
 const SINCE_FLAGS_MASK = 0xe000000000000000n;
@@ -25,12 +28,13 @@ function main(): number {
   log.setLevel(log.LogLevel.Debug);
 
   const args = HighLevel.loadScript().args.slice(VM_LOADER_ARGS);
-  if (args.byteLength !== HASH_LEN + SINCE_LEN) {
+  if (args.byteLength !== HASH_LEN + SINCE_LEN + LOCK_HASH_LEN) {
     log.debug(`bad args length: ${args.byteLength}`);
     return ERR_ARGS;
   }
   const expectedHash = args.slice(0, HASH_LEN);
   const minSince = new DataView(args).getBigUint64(HASH_LEN, true);
+  const expectedOutputLockHash = args.slice(HASH_LEN + SINCE_LEN);
 
   let passphrase: ArrayBuffer;
   try {
@@ -57,6 +61,12 @@ function main(): number {
     if ((since & SINCE_VALUE_MASK) < (minSince & SINCE_VALUE_MASK)) {
       log.debug(`since ${since} does not reach ${minSince}`);
       return ERR_SINCE;
+    }
+  }
+  for (const outputLockHash of new HighLevel.QueryIter(HighLevel.loadCellLockHash, bindings.SOURCE_OUTPUT)) {
+    if (!bytesEq(outputLockHash, expectedOutputLockHash)) {
+      log.debug('output lock hash does not match the committed recipient');
+      return ERR_OUTPUT_LOCK;
     }
   }
   return 0;

@@ -15,6 +15,7 @@ const FEE = 10_000n; // shannons, far above the 1000 shannons/KB minimum fee rat
 run('time-hash-lock on testnet', () => {
   const client = new ccc.ClientPublicTestnet({ url: 'https://testnet.ckb.dev' });
   const signer = new ccc.SignerCkbPrivateKey(client, process.env.PRIVATE_KEY!);
+  let receiver: ccc.Script;
 
   const jsVm = systemScripts.testnet['ckb_js_vm'];
   const contract = scripts.testnet['time-hash-lock.bc'];
@@ -32,15 +33,19 @@ run('time-hash-lock on testnet', () => {
         contract.codeHash.slice(2) +
         hexFrom(hashTypeToBytes(contract.hashType)).slice(2) +
         hashCkb(PASSPHRASE).slice(2) +
-        hexFrom(numLeToBytes(minSince, 8)).slice(2),
+        hexFrom(numLeToBytes(minSince, 8)).slice(2) +
+        hashCkb(receiver.toBytes()).slice(2),
     ),
   });
 
   let lockTxHash: string;
 
+  beforeAll(async () => {
+    receiver = (await signer.getRecommendedAddressObj()).script;
+  });
+
   // Builds a tx that spends output `index` of the lock tx back to the signer, with the given since and witness.
   const unlockTx = async (index: number, since: bigint, passphrase?: string) => {
-    const receiver = (await signer.getRecommendedAddressObj()).script;
     const tx = ccc.Transaction.from({
       inputs: [{ previousOutput: { txHash: lockTxHash, index }, since }],
       outputs: [{ lock: receiver, capacity: LOCKED - FEE }],
