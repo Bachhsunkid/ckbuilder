@@ -1,0 +1,26 @@
+{
+  "name": "@ckb-mines/script",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "build:debug": "node scripts/build.js --debug",
+    "test": "npm run build && vitest run"
+  },
+  "dependencies": {
+    "@ckb-js-std/bindings": "~1.0.0",
+    "@ckb-js-std/core": "~1.0.0",
+    "@ckb-mines/protocol": "0.1.0"
+  },
+  "devDependencies": {
+    "@ckb-ccc/core": "1.23.0",
+    "@noble/curves": "2.4.0",
+    "ckb-testtool": "1.0.5",
+    "dotenv": "^18.0.10",
+    "esbuild": "~0.25.8",
+    "tsx": "^4.23.15",
+    "typescript": "~5.8.2",
+    "vitest": "^3.2.4"
+  }
+}

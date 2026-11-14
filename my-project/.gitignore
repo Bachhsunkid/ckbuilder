@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.next/
+*.tsbuildinfo
+.env
+.env.local
+txs/
+e2e-results/
+.DS_Store
+.e2e-keys.json

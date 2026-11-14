@@ -236,6 +236,8 @@ Design notes:
 
 ## 9. MVP scope (Weeks 8–11)
 
+> **Re-baselined 2026-11-14:** the Week 8 spike did not happen, so the working schedule is now [PLAN.md](PLAN.md). Tier 1 is the programme deliverable, Checkpoint 1 moves to the end of Week 10, and Tier 2 follows after the programme. The table below is the original plan. **Update, end of 2026-11-14:** Tier 1 and Tier 2 (paths A–D, Play, Verify) are built and tested on testnet; current status is in PLAN.md section 2. A multi-round session design is proposed in [ADR 0001](docs/adr/0001-multi-round-sessions.md).
+
 Planned effort is 4 weeks × 10 h = 40 h, but **my honest estimate for the full scope is about 55–60 h** (script and tests 20–25 h). The plan is built in tiers so that a slip degrades the scope instead of breaking the delivery.
 
 | Week | Output | Evidence |

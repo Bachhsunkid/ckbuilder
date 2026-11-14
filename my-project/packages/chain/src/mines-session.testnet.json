@@ -1,0 +1,18 @@
+{
+  "network": "testnet",
+  "txHash": "0xb06c0cf401ce437fff3c83a2ff356d63f0d9a398bda158cd2c1cde945e1469ee",
+  "outPoint": {
+    "txHash": "0xb06c0cf401ce437fff3c83a2ff356d63f0d9a398bda158cd2c1cde945e1469ee",
+    "index": 0
+  },
+  "typeScript": {
+    "codeHash": "0x00000000000000000000000000000000000000000000000000545950455f4944",
+    "hashType": "type",
+    "args": "0x9823a70f66a1ae71a9cdf4b7dd0254257f1a85e04d58efa2b07033fba02aaa96"
+  },
+  "codeHash": "0xded4d77aa3f167ede81fb645e01a0f28aa37533557a2aa98fd4549e6d98ce11c",
+  "hashType": "type",
+  "dataHash": "0xee6b99e4b08dbdb0bbebd990158ffe73d92b832a44aae80b4e47dc5447acbdc1",
+  "size": 29571,
+  "deployedAt": "2026-11-14T09:34:07.997Z"
+}

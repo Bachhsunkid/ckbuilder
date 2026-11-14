@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: mines
+      POSTGRES_PASSWORD: mines
+      POSTGRES_DB: mines
+    ports:
+      - "5433:5432"
+    volumes:
+      - mines-pg:/var/lib/postgresql/data
+volumes:
+  mines-pg:
