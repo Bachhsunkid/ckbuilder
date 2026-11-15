@@ -1,0 +1,9 @@
+{
+  "source": "week-05/project/deployment/system-scripts.json (offckb system scripts, testnet)",
+  "codeHash": "0x3e9b6bead927bef62fcb56f0c79f4fbd1b739f32dd222beac10d346f2918bed7",
+  "hashType": "type",
+  "cellDep": {
+    "outPoint": { "txHash": "0x756fdaf0d1ba1d2e03dc13c71c967b24021bc054893a766ccee6879c468892d2", "index": 0 },
+    "depType": "code"
+  }
+}

@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`golden vectors (also checked inside ckb-js-vm) > fixed seed 1`] = `"0xa1f045c8e0d27795091d85b2404f52e6d7930639cc1823e222ed391672a9a4b4"`;
+
+exports[`golden vectors (also checked inside ckb-js-vm) > fixed seed 2`] = `
+[
+  1,
+  1,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+]
+`;
+
+exports[`golden vectors (also checked inside ckb-js-vm) > fixed seed 3`] = `
+[
+  4,
+  6,
+  1,
+  5,
+  0,
+  7,
+  3,
+  2,
+  8,
+]
+`;

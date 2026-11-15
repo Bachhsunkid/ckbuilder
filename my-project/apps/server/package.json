@@ -1,0 +1,29 @@
+{
+  "name": "@ckb-mines/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "test": "vitest run",
+    "house:split": "tsx scripts/house-split.ts",
+    "e2e": "tsx scripts/e2e.ts"
+  },
+  "dependencies": {
+    "@ckb-ccc/core": "1.23.0",
+    "@ckb-mines/chain": "0.1.0",
+    "@ckb-mines/protocol": "0.1.0",
+    "@fastify/cors": "^11.1.0",
+    "dotenv": "^18.0.10",
+    "fastify": "^5.6.1",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/pg": "^8.15.5",
+    "tsx": "^4.23.15",
+    "typescript": "~5.8.2",
+    "vitest": "^3.2.4"
+  }
+}
