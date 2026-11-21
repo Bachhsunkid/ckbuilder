@@ -9,7 +9,11 @@ starter project of the tutorial
 [Unlock Encrypted Data with a Fiber Payment](https://www.fiber.world/docs/build/encrypted-data-payment)
 (Fiber v0.10.1, `@fiber-pay/sdk` 0.3.1). **Testnet only.**
 
-<!-- Demo recording: add docs/demo/ckb-cinema-demo.gif (or a video link) here. -->
+**Live demo:** https://ckb-cinema.vercel.app/ (CKB Testnet; the [litepaper](https://ckb-cinema.vercel.app/litepaper) is also on the site).
+
+**Demo:** [screenshots of one full purchase](docs/demo/README.md), from the encrypted offer through payment to the film playing.
+
+![Unlocked film playing](docs/demo/08-unlocked-film-playing.jpg)
 
 One-page overview: [Litepaper](docs/LITEPAPER.md), also served by the app at `/litepaper`. Quest 1 (Basic) evidence and my reflection are in [docs/quest-1](docs/quest-1/README.md).
 
@@ -152,8 +156,10 @@ route. The production build has been checked to serve them:
 npm run build && npm start
 ```
 
-On **Vercel**, import the repository with the default Next.js settings. The
-headers in `next.config.mjs` apply automatically. Any host works as long as it
+On **Vercel**, import the repository with the default Next.js settings. In this
+monorepo, set **Root Directory** to `campaign/quest-2/ckb-cinema` and the
+Node.js version to 22.x. The headers in `next.config.mjs` apply automatically
+(checked on the live demo). Any host works as long as it
 sends `Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`. The masters in `samples/films`
 are not part of the deployed site; visitors load them from their own copy of

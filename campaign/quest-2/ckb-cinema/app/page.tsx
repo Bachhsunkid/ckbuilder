@@ -96,7 +96,7 @@ export default function Page() {
     if (locked.current) return;
     locked.current = true; setBusy(true); setError('');
     try { await action(); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : 'Action failed. Check status before retrying a payment.'); }
+    catch (failure) { setError(failure instanceof Error && failure.message ? failure.message : 'Action failed. Check status before retrying a payment.'); }
     finally { locked.current = false; setBusy(false); }
   }
 
@@ -278,7 +278,10 @@ export default function Page() {
     if (!checkout || !key) return;
     const { offer, release, ciphertext } = checkout;
     const contentKey = await unwrapContentKey(offer.wrappedKey, offer.wrapIv, key, licenseAad(offer.filmId, offer.filmSha256, offer.priceCkb, offer.paymentHash));
-    const film = await decryptFilm(ciphertext, release.contentIv, contentKey, filmAad(release.film));
+    // AES-GCM failures carry no message; the usual cause is a re-print after this ticket was issued.
+    const film = await decryptFilm(ciphertext, release.contentIv, contentKey, filmAad(release.film)).catch(() => {
+      throw new Error(`Your key is valid, but it does not open the current print of ${release.film.title}. The studio re-encrypted the film after this ticket was issued.`);
+    });
     if ((await sha256Hex(film)).toLowerCase() !== release.film.filmSha256.toLowerCase()) throw new Error('The decrypted film does not match its published fingerprint.');
     if (videoUrl.current) URL.revokeObjectURL(videoUrl.current);
     videoUrl.current = URL.createObjectURL(new Blob([film], { type: release.film.mime }));
