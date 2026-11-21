@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Film generator</title>
+<style>
+  body { margin: 0; padding: 24px; background: #0b0b0f; color: #eee; font: 14px system-ui, sans-serif; }
+  canvas { display: block; max-width: 100%; margin-top: 16px; border: 1px solid #333; }
+  button { padding: 10px 16px; font-weight: 700; }
+  #log { white-space: pre-wrap; font: 12px ui-monospace, monospace; color: #9f9; }
+</style>
+</head>
+<body>
+<h1>Procedural film generator</h1>
+<p>Renders three short films, their trailers and posters, and saves them to <code>public/films</code>. Keep this tab visible while it records (real time, about two minutes).</p>
+<button id="go">Generate all</button> <button id="posters">Posters only</button> <button id="backdrops">Backdrops only</button>
+<div id="log"></div>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const log = (line) => { document.getElementById('log').textContent += line + '\n'; };
+
+// Deterministic random numbers so every run renders the same films.
+function rng(seed) { return () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }; }
+const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+const fade = (t, start, end, edge = 0.6) => clamp((t - start) / edge) * clamp((end - t) / edge);
+
+function centerText(text, y, size, { weight = 800, color = '#fff', alpha = 1, spacing = 0, font = 'system-ui, sans-serif' } = {}) {
+  const { width: w } = canvas;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Shrink to fit 90% of the frame width (portrait posters are narrow).
+  for (let fit = size; fit > 8; fit *= 0.94) {
+    ctx.font = `${weight} ${fit}px ${font}`;
+    if ('letterSpacing' in ctx) ctx.letterSpacing = `${spacing * fit / size}px`;
+    if (ctx.measureText(text).width + spacing * fit / size * text.length <= w * 0.9) { size = fit; break; }
+  }
+  ctx.shadowColor = 'rgba(0,0,0,.6)';
+  ctx.shadowBlur = size * 0.4;
+  ctx.fillText(text, w / 2, y);
+  ctx.restore();
+}
+
+function vignette() {
+  const { width: w, height: h } = canvas;
+  const g = ctx.createRadialGradient(w / 2, h / 2, h * 0.3, w / 2, h / 2, h * 0.95);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(1, 'rgba(0,0,0,.65)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}
+
+function letterbox(alpha = 1) {
+  const { width: w, height: h } = canvas;
+  ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+  const bar = h * 0.07;
+  ctx.fillRect(0, 0, w, bar);
+  ctx.fillRect(0, h - bar, w, bar);
+}
+
+// ---------- Scenes ----------
+const lanternSeeds = (() => { const r = rng(7); return Array.from({ length: 46 }, () => ({ x: r(), speed: 0.025 + r() * 0.04, size: 0.6 + r() * 0.9, phase: r() * 10, offset: r() })); })();
+function paperLanterns(t) {
+  const { width: w, height: h } = canvas;
+  const sky = ctx.createLinearGradient(0, 0, 0, h);
+  sky.addColorStop(0, '#0b1030'); sky.addColorStop(0.55, '#3a1d4f'); sky.addColorStop(0.78, '#c4573a'); sky.addColorStop(1, '#14101c');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+  const stars = rng(3);
+  for (let i = 0; i < 120; i++) {
+    const tw = 0.5 + 0.5 * Math.sin(t * 2 + i);
+    ctx.fillStyle = `rgba(255,240,220,${0.25 + 0.5 * tw})`;
+    ctx.fillRect(stars() * w, stars() * h * 0.55, 1.6, 1.6);
+  }
+  // Hills and river
+  ctx.fillStyle = '#120b18';
+  ctx.beginPath(); ctx.moveTo(0, h * 0.8);
+  for (let x = 0; x <= w; x += 20) ctx.lineTo(x, h * 0.78 - Math.sin(x / w * 7) * h * 0.035 - Math.sin(x / w * 17) * h * 0.012);
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+  ctx.fillStyle = 'rgba(255,140,80,.08)'; ctx.fillRect(0, h * 0.86, w, h * 0.14);
+  for (const l of lanternSeeds) {
+    const progress = (l.offset + t * l.speed) % 1;
+    const x = (l.x + Math.sin(t * 0.6 + l.phase) * 0.02) * w;
+    const y = h * (0.95 - progress * 1.05);
+    const s = l.size * h * 0.03 * (1 - progress * 0.55);
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, s * 4);
+    glow.addColorStop(0, 'rgba(255,190,90,.55)'); glow.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = glow; ctx.fillRect(x - s * 4, y - s * 4, s * 8, s * 8);
+    ctx.fillStyle = '#ffcf7a'; ctx.fillRect(x - s * 0.6, y - s, s * 1.2, s * 1.7);
+    ctx.fillStyle = '#ff9a3c'; ctx.fillRect(x - s * 0.6, y + s * 0.5, s * 1.2, s * 0.2);
+    if (y > h * 0.35) { ctx.fillStyle = 'rgba(255,170,90,.12)'; ctx.fillRect(x - s * 0.4, h * 0.9 + (h - y) * 0.03, s * 0.8, s * 0.25); }
+  }
+}
+
+function neonTide(t) {
+  const { width: w, height: h } = canvas;
+  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.6);
+  sky.addColorStop(0, '#0d0221'); sky.addColorStop(1, '#5b0e5a');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h * 0.6);
+  // Striped sun
+  const cx = w / 2, cy = h * 0.5, r = h * 0.24;
+  const sun = ctx.createLinearGradient(0, cy - r, 0, cy + r);
+  sun.addColorStop(0, '#ffe066'); sun.addColorStop(1, '#ff3c8e');
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+  ctx.fillStyle = sun; ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  ctx.fillStyle = '#2a0636';
+  for (let i = 0; i < 7; i++) { const y = cy + i * r * 0.14 + ((t * 18) % (r * 0.14)); ctx.fillRect(cx - r, y, r * 2, 3 + i * 1.6); }
+  ctx.restore();
+  // Sea with perspective grid
+  ctx.fillStyle = '#07010f'; ctx.fillRect(0, h * 0.6, w, h * 0.4);
+  ctx.strokeStyle = 'rgba(0,240,255,.55)'; ctx.lineWidth = 1.4;
+  for (let i = -14; i <= 14; i++) { ctx.beginPath(); ctx.moveTo(cx + i * w * 0.012, h * 0.6); ctx.lineTo(cx + i * w * 0.12, h); ctx.stroke(); }
+  for (let i = 0; i < 14; i++) {
+    const p = ((i + t * 1.6) % 14) / 14;
+    const y = h * 0.6 + Math.pow(p, 2.2) * h * 0.4;
+    ctx.globalAlpha = p; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  // Glowing tide lines
+  for (let k = 0; k < 3; k++) {
+    ctx.strokeStyle = ['#00f0ff', '#ff3c8e', '#b967ff'][k]; ctx.lineWidth = 3; ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 18;
+    ctx.beginPath();
+    for (let x = 0; x <= w; x += 8) ctx.lineTo(x, h * (0.68 + k * 0.07) + Math.sin(x / w * 9 + t * (1.4 + k * 0.4)) * h * 0.02);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+  // Surfer silhouette riding the middle wave
+  const sx = ((t * 0.06) % 1.2 - 0.1) * w;
+  const sy = h * 0.75 + Math.sin(sx / w * 9 + t * 1.8) * h * 0.02;
+  ctx.fillStyle = '#05000a';
+  ctx.beginPath(); ctx.ellipse(sx, sy, h * 0.045, h * 0.008, -0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.fillRect(sx - 3, sy - h * 0.06, 6, h * 0.055);
+  ctx.beginPath(); ctx.arc(sx, sy - h * 0.07, h * 0.012, 0, Math.PI * 2); ctx.fill();
+}
+
+const starLayers = (() => { const r = rng(11); return [0.2, 0.5, 1].map((depth) => ({ depth, stars: Array.from({ length: 90 }, () => [r(), r()]) })); })();
+function orbitNine(t) {
+  const { width: w, height: h } = canvas;
+  ctx.fillStyle = '#02030a'; ctx.fillRect(0, 0, w, h);
+  const neb = ctx.createRadialGradient(w * 0.75, h * 0.3, 0, w * 0.75, h * 0.3, h * 0.8);
+  neb.addColorStop(0, 'rgba(70,90,200,.35)'); neb.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = neb; ctx.fillRect(0, 0, w, h);
+  for (const layer of starLayers) {
+    ctx.fillStyle = `rgba(220,230,255,${0.3 + layer.depth * 0.6})`;
+    for (const [x, y] of layer.stars) ctx.fillRect(((x - t * 0.01 * layer.depth) % 1 + 1) % 1 * w, y * h, layer.depth * 2.2, layer.depth * 2.2);
+  }
+  // Planet with rings
+  const px = w * 0.42, py = h * 0.55, pr = h * 0.22;
+  const ringBack = () => { ctx.strokeStyle = 'rgba(200,180,255,.5)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(px, py, pr * 1.8, pr * 0.4, -0.25, Math.PI, Math.PI * 2); ctx.stroke(); };
+  ringBack();
+  const body = ctx.createRadialGradient(px - pr * 0.4, py - pr * 0.4, pr * 0.1, px, py, pr);
+  body.addColorStop(0, '#7fd3ff'); body.addColorStop(0.6, '#2b5bb8'); body.addColorStop(1, '#0b1440');
+  ctx.fillStyle = body; ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(200,180,255,.75)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.ellipse(px, py, pr * 1.8, pr * 0.4, -0.25, 0, Math.PI); ctx.stroke();
+  // Ship orbit and trail
+  const a = t * 0.7;
+  const shipAt = (angle) => [px + Math.cos(angle) * pr * 2.3, py + Math.sin(angle) * pr * 0.7 - Math.cos(angle) * pr * 0.3];
+  for (let i = 0; i < 40; i++) {
+    const [x, y] = shipAt(a - i * 0.03);
+    ctx.fillStyle = `rgba(120,255,220,${0.5 * (1 - i / 40)})`; ctx.fillRect(x, y, 3, 3);
+  }
+  const [sx, sy] = shipAt(a);
+  ctx.fillStyle = '#e8fff8'; ctx.shadowColor = '#7fffd4'; ctx.shadowBlur = 16;
+  ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+  // Signal pulses from a distant beacon
+  const pulse = (t * 0.5) % 1;
+  ctx.strokeStyle = `rgba(255,220,120,${1 - pulse})`; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(w * 0.85, h * 0.2, 8 + pulse * h * 0.2, 0, Math.PI * 2); ctx.stroke();
+  ctx.fillStyle = '#ffdc78'; ctx.fillRect(w * 0.85 - 3, h * 0.2 - 3, 6, 6);
+}
+
+const FILMS = [
+  { id: 'paper-lanterns', title: 'PAPER LANTERNS', price: 1, scene: paperLanterns, accent: '#ffb35c', font: 'Georgia, serif',
+    notes: [261.6, 329.6, 392, 523.3, 392, 329.6], wave: 'triangle',
+    captions: ['A village keeps one promise a year.', 'Every lantern carries a wish.', 'This year, Mai sends two.'] },
+  { id: 'neon-tide', title: 'NEON TIDE', price: 2, scene: neonTide, accent: '#00f0ff', font: 'system-ui, sans-serif',
+    notes: [220, 277.2, 329.6, 440, 329.6, 277.2, 246.9, 329.6], wave: 'sawtooth',
+    captions: ['2089. The sea learned to glow.', 'Kai surfs the light at midnight.', 'But the tide is turning.'] },
+  { id: 'orbit-nine', title: 'ORBIT NINE', price: 3, scene: orbitNine, accent: '#7fffd4', font: 'system-ui, sans-serif',
+    notes: [196, 293.7, 392, 587.3, 392, 293.7], wave: 'sine',
+    captions: ['Orbit Nine. Last station before the dark.', 'One pilot. One signal.', 'Someone is answering.'] },
+];
+
+function drawFull(film, t) {
+  const { height: h } = canvas;
+  film.scene(t);
+  vignette();
+  letterbox();
+  if (t < 3.2) {
+    ctx.fillStyle = `rgba(0,0,0,${clamp(1 - (t - 2.4) / 0.8)})`; ctx.fillRect(0, 0, canvas.width, h);
+    centerText('FIBER TESTNET PICTURES', h * 0.47, h * 0.045, { spacing: h * 0.012, alpha: fade(t, 0.2, 3) });
+    centerText('presents', h * 0.55, h * 0.03, { weight: 400, alpha: fade(t, 0.8, 3), color: '#bbb' });
+  }
+  centerText(film.title, h * 0.45, h * 0.12, { alpha: fade(t, 3.4, 7.2), color: film.accent, spacing: h * 0.02, font: film.font });
+  film.captions.forEach((line, i) => centerText(line, h * 0.86, h * 0.04, { weight: 500, alpha: fade(t, 7.6 + i * 4.2, 11.2 + i * 4.2) }));
+  if (t > 20) {
+    ctx.fillStyle = `rgba(0,0,0,${clamp((t - 20) / 1)})`; ctx.fillRect(0, 0, canvas.width, h);
+    centerText('THE END', h * 0.44, h * 0.08, { alpha: clamp((t - 20.6) / 0.6), color: film.accent, spacing: h * 0.02, font: film.font });
+    centerText('A procedurally generated short · unlocked with a Fiber payment on CKB Testnet', h * 0.56, h * 0.026, { weight: 400, alpha: clamp((t - 21.2) / 0.6), color: '#aaa' });
+  }
+}
+
+function drawTrailer(film, t) {
+  const { width: w, height: h } = canvas;
+  film.scene(4 + t * 1.6);
+  vignette();
+  letterbox();
+  if (t < 1.6) {
+    ctx.fillStyle = `rgba(0,0,0,${clamp(1 - (t - 1) / 0.6)})`; ctx.fillRect(0, 0, w, h);
+    centerText('OFFICIAL TRAILER', h * 0.5, h * 0.06, { spacing: h * 0.015, alpha: fade(t, 0, 1.6, 0.3) });
+  }
+  centerText(film.captions[0], h * 0.86, h * 0.045, { weight: 500, alpha: fade(t, 1.8, 4.4, 0.4) });
+  centerText(film.captions[1], h * 0.86, h * 0.045, { weight: 500, alpha: fade(t, 4.4, 6.8, 0.4) });
+  if (t > 6.8) {
+    ctx.fillStyle = `rgba(0,0,0,${clamp((t - 6.8) / 0.4) * 0.7})`; ctx.fillRect(0, 0, w, h);
+    centerText(film.title, h * 0.44, h * 0.12, { alpha: clamp((t - 6.9) / 0.4), color: film.accent, spacing: h * 0.02, font: film.font });
+    centerText(`Watch the full film · ${film.price} CKB over Fiber`, h * 0.58, h * 0.04, { weight: 600, alpha: clamp((t - 7.3) / 0.4) });
+  }
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.fillRect(w - h * 0.2, h * 0.09, h * 0.17, h * 0.06);
+  ctx.fillStyle = film.accent; ctx.font = `800 ${h * 0.03}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('TRAILER', w - h * 0.115, h * 0.12);
+  ctx.restore();
+}
+
+function drawPoster(film) {
+  const { height: h } = canvas;
+  film.scene(12);
+  vignette();
+  const g = ctx.createLinearGradient(0, h * 0.55, 0, h);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.9)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, h);
+  centerText(film.title, h * 0.8, h * 0.075, { color: film.accent, spacing: h * 0.01, font: film.font });
+  centerText(film.captions[1], h * 0.87, h * 0.027, { weight: 500, color: '#ddd' });
+  centerText('FIBER TESTNET PICTURES', h * 0.94, h * 0.018, { weight: 700, color: '#999', spacing: h * 0.006 });
+}
+
+function scheduleMusic(audio, destination, film, duration, tempo) {
+  const master = audio.createGain();
+  master.gain.value = 0.16;
+  master.connect(destination);
+  const start = audio.currentTime + 0.05;
+  const step = 60 / tempo / 2;
+  for (let i = 0; start + i * step < start + duration - 0.3; i++) {
+    const at = start + i * step;
+    const freq = film.notes[i % film.notes.length] * (Math.floor(i / 16) % 2 ? 1.122 : 1);
+    const osc = audio.createOscillator();
+    const env = audio.createGain();
+    osc.type = film.wave; osc.frequency.value = freq;
+    env.gain.setValueAtTime(0, at);
+    env.gain.linearRampToValueAtTime(0.9, at + 0.02);
+    env.gain.exponentialRampToValueAtTime(0.001, at + step * 1.8);
+    osc.connect(env).connect(master);
+    osc.start(at); osc.stop(at + step * 2);
+    if (i % 8 === 0) {
+      const bass = audio.createOscillator(); const benv = audio.createGain();
+      bass.type = 'sine'; bass.frequency.value = film.notes[0] / 2;
+      benv.gain.setValueAtTime(0.8, at); benv.gain.exponentialRampToValueAtTime(0.001, at + step * 7.5);
+      bass.connect(benv).connect(master); bass.start(at); bass.stop(at + step * 8);
+    }
+  }
+  master.gain.setValueAtTime(0.16, start + duration - 1.2);
+  master.gain.linearRampToValueAtTime(0, start + duration - 0.1);
+}
+
+async function save(name, blob) {
+  const response = await fetch(`/save?name=${name}`, { method: 'POST', body: blob });
+  if (!response.ok) throw new Error(await response.text());
+  log(`saved ${name} (${(blob.size / 1024).toFixed(0)} KB)`);
+}
+
+async function record({ name, width, height, duration, bitrate, film, draw, tempo }) {
+  canvas.width = width; canvas.height = height;
+  draw(film, 0);
+  const stream = canvas.captureStream(30);
+  const audio = new AudioContext();
+  await audio.resume();
+  const destination = audio.createMediaStreamDestination();
+  scheduleMusic(audio, destination, film, duration, tempo);
+  stream.addTrack(destination.stream.getAudioTracks()[0]);
+  const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus', videoBitsPerSecond: bitrate, audioBitsPerSecond: 96_000 });
+  const chunks = [];
+  recorder.ondataavailable = (event) => event.data.size && chunks.push(event.data);
+  const stopped = new Promise((resolve) => { recorder.onstop = resolve; });
+  recorder.start(500);
+  const began = performance.now();
+  await new Promise((resolve) => {
+    const frame = () => {
+      const t = (performance.now() - began) / 1000;
+      draw(film, Math.min(t, duration));
+      if (t < duration) requestAnimationFrame(frame); else resolve();
+    };
+    requestAnimationFrame(frame);
+  });
+  recorder.stop();
+  await stopped;
+  await audio.close();
+  await save(name, new Blob(chunks, { type: 'video/webm' }));
+}
+
+async function poster(film) {
+  canvas.width = 600; canvas.height = 900;
+  drawPoster(film);
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+  await save(`${film.id}-poster.png`, blob);
+}
+
+// Wide film stills (no text) for the catalog hero and the locked screen.
+async function backdrop(film) {
+  canvas.width = 1920; canvas.height = 820;
+  film.scene(film.still ?? 12);
+  vignette();
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.86));
+  await save(`${film.id}-backdrop.jpg`, blob);
+}
+document.getElementById('backdrops').onclick = async () => {
+  for (const film of FILMS) await backdrop(film);
+  log('BACKDROPS DONE');
+};
+
+document.getElementById('posters').onclick = async () => {
+  for (const film of FILMS) await poster(film);
+  log('POSTERS DONE');
+};
+
+document.getElementById('go').onclick = async () => {
+  document.getElementById('go').disabled = true;
+  try {
+    for (const film of FILMS) {
+      await poster(film);
+      await record({ name: `${film.id}-trailer.webm`, width: 854, height: 480, duration: 9, bitrate: 900_000, film, draw: drawTrailer, tempo: 132 });
+      await record({ name: `${film.id}.webm`, width: 1280, height: 720, duration: 24, bitrate: 1_600_000, film, draw: drawFull, tempo: 108 });
+    }
+    log('DONE');
+  } catch (error) {
+    log(`ERROR ${error}`);
+  }
+};
+</script>
+</body>
+</html>
