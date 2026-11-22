@@ -1,0 +1,10 @@
+**/node_modules
+**/.next
+**/dist
+.env
+**/.env*
+.e2e-keys.json
+e2e-results
+txs
+apps/web
+packages/script

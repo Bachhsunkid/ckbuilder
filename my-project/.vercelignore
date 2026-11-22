@@ -1,0 +1,12 @@
+# never upload secrets or server-only code to Vercel
+.env
+**/.env*
+.e2e-keys.json
+e2e-results
+txs
+**/node_modules
+**/.next
+**/dist
+apps/server
+packages/script
+Dockerfile

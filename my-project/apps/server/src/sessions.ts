@@ -79,7 +79,7 @@ export class Sessions {
       idle: config.sessionIdleSeconds,
       minDeposit: config.minDeposit.toString(),
       maxDeposit: config.maxDeposit.toString(),
-      minStake: config.minStake.toString(),
+      minStake: config.sessionMinStake.toString(),
       maxBet: (config.maxSessionHouse / HARDEST).toString(),
       houseKeyHash: hex(this.houseKeyHash),
     };
@@ -121,9 +121,11 @@ export class Sessions {
     if (deposit < config.minDeposit || deposit > config.maxDeposit) {
       throw new ApiError(400, `deposit must be ${ccc.fixedPointToString(config.minDeposit)}–${ccc.fixedPointToString(config.maxDeposit)} CKB`);
     }
-    if (maxBet < config.minStake) throw new ApiError(400, `max bet must be at least ${ccc.fixedPointToString(config.minStake)} CKB`);
+    if (maxBet < config.sessionMinStake) throw new ApiError(400, `max bet must be at least ${ccc.fixedPointToString(config.sessionMinStake)} CKB`);
     const houseDeposit = HARDEST * maxBet;
     if (houseDeposit > config.maxSessionHouse) throw new ApiError(400, `max bet is at most ${ccc.fixedPointToString(config.maxSessionHouse / HARDEST)} CKB`);
+
+    await this.oneLiveSession(playerLock);
 
     const id = randomUUID();
     const args: PS.SessionArgs = {
@@ -167,6 +169,31 @@ export class Sessions {
       tx,
       sigH: hex(sigH),
     };
+  }
+
+  /**
+   * One live session per wallet, so a single player cannot tie up the operator's capacity.
+   * A session that was created but never signed is dropped: the player started over.
+   */
+  private async oneLiveSession(playerLock: ccc.Script) {
+    const mine = hex(lockHash(playerLock));
+    const rows = (
+      await pool.query<SessionRow>(
+        "select * from sessions where player_lock_hash = $1 and status in ('committed', 'opening', 'open', 'withdrawing')",
+        [mine],
+      )
+    ).rows;
+    for (const s of rows) {
+      if (s.status !== 'committed') {
+        throw new ApiError(
+          409,
+          `this wallet already has a session (${s.id.slice(0, 8)}, ${s.status}). Resume it in the browser that opened it; the operator closes idle sessions after ${Math.round(config.sessionIdleSeconds / 60)} min.`,
+        );
+      }
+      await withBet(s.id, async () => {
+        if (await updateSession(s.id, { status: 'expired' }, 'committed')) await this.releaseAll(s.house_in);
+      });
+    }
   }
 
   /** Step 2: the player's signature on state 0 and its signed deposit; we co-sign and broadcast. */
@@ -218,7 +245,7 @@ export class Sessions {
       this.ready(s);
       const m = Number(body.m);
       const stake = amount(body.stake, 'stake');
-      if (stake < config.minStake) throw new ApiError(400, `minimum stake is ${ccc.fixedPointToString(config.minStake)} CKB`);
+      if (stake < config.sessionMinStake) throw new ApiError(400, `minimum stake is ${ccc.fixedPointToString(config.sessionMinStake)} CKB`);
       const problem = roundProblem(mustDecodeState(s.state.state), m, stake);
       if (problem) throw new ApiError(400, problem);
       await pool.query("update session_rounds set status = 'abandoned', updated_at = now() where session_id = $1 and status = 'sealed'", [id]);

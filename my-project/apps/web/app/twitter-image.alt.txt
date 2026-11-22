@@ -1,0 +1,1 @@
+CKB Mines: a 3x3 mines board with three safe tiles and one mine, on CKB testnet

@@ -18,6 +18,7 @@ Published every week, each covering the week just completed.
 | [06](week-06/report.md) | 2026-11-01 | Fiber review, lock-script output-substitution fix, Molecule and ecosystem scripts |
 | [07](week-07/report.md) | 2026-11-08 | App idea (CKB Mines): SPEC, game math, clickable UI prototype |
 | [08](week-08/report.md) | 2026-11-15 | CKB Mines on testnet: single-game paths A–D, multi-round sessions (state channel), E2E and drills |
+| [09](week-09/report.md) | 2026-11-22 | Campaign #8 (Fiber pay-to-unlock, CKB Cinema); CKB Mines public testnet playtest |
 
 ## Structure
 

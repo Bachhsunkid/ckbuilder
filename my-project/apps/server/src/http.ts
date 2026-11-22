@@ -1,14 +1,22 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import { toJson } from '@ckb-mines/chain';
 import { ApiError, Game } from './bets';
 import { config } from './config';
 import { HouseBusyError } from './house';
 import { Sessions } from './sessions';
+import { Stats } from './stats';
 
-export async function buildApp(game: Game, sessions: Sessions) {
-  const app = Fastify({ logger: { level: 'warn' }, bodyLimit: 256 * 1024 });
-  await app.register(cors, { origin: config.corsOrigin });
+export async function buildApp(game: Game, sessions: Sessions, stats = new Stats(game.house)) {
+  const app = Fastify({ logger: { level: 'warn' }, bodyLimit: 256 * 1024, trustProxy: config.trustProxy });
+  await app.register(cors, { origin: config.corsOrigin.includes(',') ? config.corsOrigin.split(',') : config.corsOrigin });
+  // public testnet launch: keep one client from flooding the API or reserving all house cells
+  await app.register(rateLimit, {
+    max: config.rateLimitPerMinute,
+    timeWindow: '1 minute',
+    errorResponseBuilder: (_req, ctx) => ({ statusCode: 429, message: `too many requests, try again in ${Math.ceil(ctx.ttl / 1000)} s` }),
+  });
 
   // bigints and CCC objects serialize through ccc.stringify
   app.setReplySerializer((payload) => toJson(payload));
@@ -26,6 +34,8 @@ export async function buildApp(game: Game, sessions: Sessions) {
   app.get('/api/health', async () => ({ ok: true }));
   app.get('/api/config', async () => ({ ...game.publicConfig(), session: sessions.publicConfig() }));
   app.get('/api/house', async () => game.house.summary());
+  app.get('/api/stats', async () => stats.summary());
+  app.get<{ Querystring: { period?: string } }>('/api/leaderboard', async (req) => stats.leaderboard(String(req.query.period ?? 'all')));
   app.get<{ Querystring: { player?: string } }>('/api/bets', async (req) => game.history(String(req.query.player ?? '')));
   app.post('/api/bets', async (req) => game.create((req.body ?? {}) as object));
   app.get<Id>('/api/bets/:id', async (req) => game.view(req.params.id));
@@ -38,7 +48,9 @@ export async function buildApp(game: Game, sessions: Sessions) {
   // sessions (ADR 0001)
   type Round = { Params: { id: string; round: string } };
   const body = (req: { body?: unknown }) => (req.body ?? {}) as object;
-  app.post('/api/sessions', async (req) => sessions.create(body(req)));
+  app.post('/api/sessions', { config: { rateLimit: { max: config.sessionCreatesPerMinute, timeWindow: '1 minute' } } }, async (req) =>
+    sessions.create(body(req)),
+  );
   app.get<Id>('/api/sessions/:id', async (req) => sessions.view(req.params.id));
   app.post<Id>('/api/sessions/:id/open', async (req) => sessions.open(req.params.id, body(req)));
   app.post<Id>('/api/sessions/:id/rounds', async (req) => sessions.newRound(req.params.id, body(req)));

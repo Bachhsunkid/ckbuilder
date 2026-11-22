@@ -1,0 +1,26 @@
+# Render Blueprint for the CKB Mines game server (testnet playtest).
+# Web app: Vercel (my-project/apps/web). Database: Neon (DATABASE_URL, set in the dashboard).
+services:
+  - type: web
+    name: ckb-mines-api
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: ckb-mines-launch
+    rootDir: my-project
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: PRIVATE_KEY # operator key, testnet only
+        sync: false
+      - key: DATABASE_URL # Neon connection string, with ?sslmode=require
+        sync: false
+      - key: CORS_ORIGIN
+        value: https://ckb-mines.vercel.app
+      - key: D_CHALLENGE
+        value: "3600"
+      - key: SESSION_IDLE
+        value: "900"
+      - key: MAX_SESSION_HOUSE_CKB
+        value: "1250"

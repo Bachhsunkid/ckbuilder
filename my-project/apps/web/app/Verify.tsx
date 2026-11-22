@@ -4,6 +4,7 @@ import { H, OPERATOR_FEE, argsFromJson, bytes, decodeBetLock, receiptFromJson } 
 import * as P from '@ckb-mines/protocol';
 import { useEffect, useState } from 'react';
 import { ACTIVE, API, DIFFICULTY, EXPLORER, ckb, loadGames, short, type SavedGame } from './lib';
+import { SessionVerify } from './SessionVerify';
 
 interface Result {
   checks: P.Check[];
@@ -31,7 +32,7 @@ async function playerFlow(client: ccc.Client, txHash: string, playerLockHash: st
   return flow;
 }
 
-export function Verify() {
+function SingleVerify() {
   const { client } = ccc.useCcc();
   const [games, setGames] = useState<SavedGame[]>([]);
   const [id, setId] = useState('');
@@ -213,6 +214,38 @@ export function Verify() {
         </div>
         <span className="zigzag" />
       </aside>
+    </div>
+  );
+}
+
+export function Verify() {
+  // single games are kept for old links (#verify/<bet id>) and players who used the hidden Single game tab
+  const [mode, setMode] = useState<'sessions' | 'single'>(() => (idFromHash() ? 'single' : 'sessions'));
+  const [hasSingle] = useState(() => loadGames().length > 0 || !!idFromHash());
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {hasSingle && (
+        <div className="seg" role="group" aria-label="What to verify" style={{ alignSelf: 'flex-start' }}>
+          <button aria-pressed={mode === 'sessions'} onClick={() => setMode('sessions')}>
+            Session rounds
+          </button>
+          <button aria-pressed={mode === 'single'} onClick={() => setMode('single')}>
+            Single games
+          </button>
+        </div>
+      )}
+      {mode === 'single' ? (
+        <SingleVerify />
+      ) : (
+        <section className="board-col" style={{ maxWidth: 720 }}>
+          <h1 style={{ margin: 0, fontSize: 40, lineHeight: 1.1 }}>Verify a round</h1>
+          <p className="note" style={{ fontSize: 17 }}>
+            Rebuilds the board from the seed the operator revealed, checks it against the root both of you signed before your seed existed, and replays
+            every receipt and the payout. The session terms are read from your deposit on chain.
+          </p>
+          <SessionVerify />
+        </section>
+      )}
     </div>
   );
 }

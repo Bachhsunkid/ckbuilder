@@ -118,3 +118,43 @@ export function saveSession(rec: SessionRecord) {
 export function sessionBackupUrl(rec: SessionRecord): string {
   return URL.createObjectURL(new Blob([JSON.stringify(rec, null, 2)], { type: 'application/json' }));
 }
+
+/** Turns SDK, wallet and server errors into one sentence a player can act on. */
+export function friendlyError(e: unknown): string {
+  const raw = String((e as Error)?.message ?? e).replace(/^Error: /, '');
+  if (/user (rejected|denied|cancel)|cancell?ed|rejected by user|popup closed|window closed/i.test(raw)) return 'You cancelled the signature in your wallet. Nothing was sent.';
+  if (/failed to fetch|networkerror|load failed/i.test(raw)) return 'Cannot reach the game server. Check your connection and try again; your session is saved in this browser.';
+  if (/: 503 |house cell/i.test(raw)) return 'All tables are taken right now. Try again in a minute.';
+  if (/: 429 |too many requests/i.test(raw)) return 'Too many requests from your connection. Wait a minute and try again.';
+  if (/insufficient|not enough capacity/i.test(raw)) return 'Your wallet does not hold enough CKB for the deposit plus the fee. Get more from the faucet.';
+  const api = raw.match(/^(?:GET|POST) \S+: \d{3} (.+)$/s);
+  const msg = api ? api[1] : raw;
+  const out = msg.charAt(0).toUpperCase() + msg.slice(1);
+  return out.length > 240 ? `${out.slice(0, 240)}…` : out;
+}
+
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** First-visit guide: hidden once the player has opened a session in this browser. */
+const GUIDE_KEY = 'ckb-mines/guide-seen';
+export function guideSeen(): boolean {
+  try {
+    return localStorage.getItem(GUIDE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+export function markGuideSeen() {
+  try {
+    localStorage.setItem(GUIDE_KEY, '1');
+  } catch {
+    // storage blocked: the guide just stays open
+  }
+}

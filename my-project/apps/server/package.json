@@ -15,6 +15,7 @@
     "@ckb-mines/chain": "0.1.0",
     "@ckb-mines/protocol": "0.1.0",
     "@fastify/cors": "^11.1.0",
+    "@fastify/rate-limit": "^11.3.0",
     "dotenv": "^18.0.10",
     "fastify": "^5.6.1",
     "pg": "^8.16.3"
