@@ -8,3 +8,5 @@ txs/
 e2e-results/
 .DS_Store
 .e2e-keys.json
+.vercel
+.env*

@@ -18,12 +18,16 @@ async function main() {
   await app.listen({ port: config.port, host: '0.0.0.0' });
   watcher.start();
   sessionWatcher.start();
+  const keepAlive = config.keepAliveUrl
+    ? setInterval(() => void fetch(`${config.keepAliveUrl}/api/health`).catch(() => {}), 10 * 60_000)
+    : undefined;
   console.log(
     `CKB Mines server on :${config.port} | house ${await house.signer.getRecommendedAddress()} | T_play ${config.tPlaySeconds}s D_exit ${config.dExitSeconds}s D_forfeit ${config.dForfeitSeconds}s D_challenge ${config.dChallengeSeconds}s idle ${config.sessionIdleSeconds}s`,
   );
   const shutdown = async () => {
     watcher.stop();
     sessionWatcher.stop();
+    clearInterval(keepAlive);
     await app.close();
     await pool.end();
     process.exit(0);

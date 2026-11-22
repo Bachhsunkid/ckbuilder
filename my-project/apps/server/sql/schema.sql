@@ -77,6 +77,7 @@ create table if not exists sessions (
   updated_at timestamptz not null default now()
 );
 create index if not exists sessions_status on sessions (status);
+create index if not exists sessions_player on sessions (player_lock_hash);
 
 create table if not exists session_rounds (
   id uuid primary key,

@@ -102,6 +102,7 @@ export class House {
       freeCells: free.length,
       balance: total,
       largestFree: free.reduce((a, c) => (c.capacity > a ? c.capacity : a), 0n),
+      freeBalance: free.reduce((a, c) => a + c.capacity, 0n),
     };
   }
 

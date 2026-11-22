@@ -37,6 +37,18 @@ export const config = {
   minDeposit: BigInt(num('MIN_DEPOSIT_CKB', 100)) * P.SHANNONS_PER_CKB,
   maxDeposit: BigInt(num('MAX_DEPOSIT_CKB', 2000)) * P.SHANNONS_PER_CKB,
   maxSessionHouse: BigInt(num('MAX_SESSION_HOUSE_CKB', 2500)) * P.SHANNONS_PER_CKB,
+  /** smallest stake of a session round; sessions have no per-bet cell, so this can be far below MIN_STAKE */
+  sessionMinStake: BigInt(num('SESSION_MIN_STAKE_CKB', 1)) * P.SHANNONS_PER_CKB,
+  /** set to 1 behind a reverse proxy (Railway, Fly, nginx) so rate limits see the client's IP */
+  trustProxy: process.env.TRUST_PROXY === '1',
+  /** requests per minute per IP, all routes; opening a session has its own lower limit */
+  rateLimitPerMinute: num('RATE_LIMIT_PER_MIN', 600),
+  sessionCreatesPerMinute: num('SESSION_CREATES_PER_MIN', 6),
+  /**
+   * Free hosts (Render) stop a service after 15 min without inbound traffic, which would also stop the
+   * watchers. Pinging our own public URL keeps it awake. Render sets RENDER_EXTERNAL_URL itself.
+   */
+  keepAliveUrl: process.env.KEEPALIVE_URL || process.env.RENDER_EXTERNAL_URL || undefined,
 };
 
 if (BigInt(config.tPlaySeconds) + 120n > config.dExitSeconds) {
