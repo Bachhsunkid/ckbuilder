@@ -155,7 +155,11 @@ export function Session(props: { signer?: ccc.Signer; balance?: bigint; address?
   // a reload during the deposit: wait for it here
   useEffect(() => {
     if (!player || !rec || rec.status !== 'opening' || busy) return;
-    player.waitOpen(rec).catch((e) => setError(friendlyError(e)));
+    player.waitOpen(rec).catch((e) => {
+      setError(friendlyError(e));
+      // the operator dropped it before the deposit: nothing to resume, back to setup
+      if (rec.status === 'failed') setRec(null);
+    });
   }, [player, rec?.id, rec?.status, busy]);
 
   // watch the chain for us: answer a stale close, post receipts, collect after the window
@@ -269,11 +273,17 @@ export function Session(props: { signer?: ccc.Signer; balance?: bigint; address?
   const openSession = () =>
     act('Checking the session terms…', async () => {
       setOpenStep(0);
-      const r = await player!.open(deposit, BigInt(maxBetCkb) * CKB, (s) => {
-        if (s in OPEN_PROGRESS) setOpenStep(OPEN_PROGRESS[s]);
-        if (s === 'session terms checked') setBusy('Sign the deposit in your wallet…');
-        if (s === 'deposit sent') setBusy('Waiting for the block…');
-      });
+      const r = await player!
+        .open(deposit, BigInt(maxBetCkb) * CKB, (s) => {
+          if (s in OPEN_PROGRESS) setOpenStep(OPEN_PROGRESS[s]);
+          if (s === 'session terms checked') setBusy('Sign the deposit in your wallet…');
+          if (s === 'deposit sent') setBusy('Waiting for the block…');
+        })
+        .catch((e) => {
+          // refused before the deposit was sent: drop the record so the setup comes back
+          if (recRef.current?.status === 'failed') setRec(null);
+          throw e;
+        });
       markGuideSeen();
       setRec(r);
     });
@@ -508,7 +518,7 @@ export function Session(props: { signer?: ccc.Signer; balance?: bigint; address?
                   )}
                 </div>
               )}
-              {opening && <OpenSteps step={openStep} now={now} />}
+              {opening && <OpenSteps step={openStep} now={now} signWithin={cfg?.signWithin} />}
               {primary && (
                 <button className="btn" disabled={primary.disabled} onClick={primary.run}>
                   {primary.label}
@@ -737,7 +747,7 @@ export function Session(props: { signer?: ccc.Signer; balance?: bigint; address?
   );
 }
 
-function OpenSteps({ step, since, now, tx }: { step: number; since?: number; now: number; tx?: string }) {
+function OpenSteps({ step, since, now, tx, signWithin }: { step: number; since?: number; now: number; tx?: string; signWithin?: number }) {
   return (
     <ol className="steps" aria-label="Opening the session">
       {OPEN_STEPS.map((label, i) => (
@@ -745,6 +755,7 @@ function OpenSteps({ step, since, now, tx }: { step: number; since?: number; now
           <span className="mono">{i < step ? '✓' : i + 1}</span>
           <span>
             {label}
+            {i === 1 && step === 1 && signWithin ? ` · within ${humanWindow(signWithin)}` : ''}
             {i === 3 && step === 3 && since ? ` · ${Math.max(0, Math.round((now - since) / 1000))} s` : ''}
           </span>
         </li>

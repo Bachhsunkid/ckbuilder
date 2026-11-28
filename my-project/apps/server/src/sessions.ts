@@ -77,6 +77,7 @@ export class Sessions {
     return {
       dChallenge: config.dChallengeSeconds.toString(),
       idle: config.sessionIdleSeconds,
+      signWithin: config.sessionCommitTimeoutSeconds,
       minDeposit: config.minDeposit.toString(),
       maxDeposit: config.maxDeposit.toString(),
       minStake: config.sessionMinStake.toString(),
