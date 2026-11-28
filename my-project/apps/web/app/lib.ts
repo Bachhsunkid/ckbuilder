@@ -79,6 +79,8 @@ export const ACTIVE = new Set(['opening', 'open']);
 export interface SessionConfig {
   dChallenge: string;
   idle: number;
+  /** seconds the operator holds the table while the wallet signs the deposit (older servers omit it) */
+  signWithin?: number;
   minDeposit: string;
   maxDeposit: string;
   minStake: string;
@@ -126,6 +128,7 @@ export function friendlyError(e: unknown): string {
   if (/failed to fetch|networkerror|load failed/i.test(raw)) return 'Cannot reach the game server. Check your connection and try again; your session is saved in this browser.';
   if (/: 503 |house cell/i.test(raw)) return 'All tables are taken right now. Try again in a minute.';
   if (/: 429 |too many requests/i.test(raw)) return 'Too many requests from your connection. Wait a minute and try again.';
+  if (/session is expired|session \S+ expired/i.test(raw)) return 'The deposit was not signed in time, so the operator freed your table. Nothing was sent: open the session again.';
   if (/insufficient|not enough capacity/i.test(raw)) return 'Your wallet does not hold enough CKB for the deposit plus the fee. Get more from the faucet.';
   const api = raw.match(/^(?:GET|POST) \S+: \d{3} (.+)$/s);
   const msg = api ? api[1] : raw;

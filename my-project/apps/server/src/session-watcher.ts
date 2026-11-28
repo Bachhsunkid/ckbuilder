@@ -72,7 +72,7 @@ export class SessionWatcher {
     const s = (await pool.query<SessionRow>('select * from sessions where id = $1', [id])).rows[0];
     const age = (Date.now() - s.updated_at.getTime()) / 1000;
     if (s.status === 'committed') {
-      if (age > config.commitTimeoutSeconds) {
+      if (age > config.sessionCommitTimeoutSeconds) {
         await updateSession(id, { status: 'expired' }, 'committed');
         await this.sessions.releaseAll(s.house_in);
         log(id, 'expired, house cell released');

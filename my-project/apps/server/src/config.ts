@@ -28,6 +28,8 @@ export const config = {
   minStake: BigInt(num('MIN_STAKE_CKB', 10)) * P.SHANNONS_PER_CKB,
   /** a bet that is committed but never opened releases its house cell after this */
   commitTimeoutSeconds: num('COMMIT_TIMEOUT', 300),
+  /** same for a session; longer, because a passkey wallet (JoyID) can take minutes to sign the deposit */
+  sessionCommitTimeoutSeconds: num('SESSION_COMMIT_TIMEOUT', 900),
   watchIntervalMs: num('WATCH_INTERVAL_MS', 4000),
   corsOrigin: process.env.CORS_ORIGIN ?? '*',
   /** ADR 0001: challenge window of a unilateral session close. 24 h in production, short for testnet runs. */

@@ -131,7 +131,7 @@ export class SessionPlayer {
     });
     const text = await res.text();
     const json = text ? JSON.parse(text) : {};
-    if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${json.error ?? text}`);
+    if (!res.ok) throw Object.assign(new Error(`${method} ${path}: ${res.status} ${json.error ?? text}`), { status: res.status });
     return json as T;
   }
 
@@ -220,7 +220,19 @@ export class SessionPlayer {
     // keep the key and the signed opening state before the deposit can land: they are how we close alone
     await this.persist(rec);
     onProgress?.('deposit signed');
-    await this.call('POST', `/api/sessions/${rec.id}/open`, { tx: signed, sigP: hex(sigP) });
+    try {
+      await this.call('POST', `/api/sessions/${rec.id}/open`, { tx: signed, sigP: hex(sigP) });
+    } catch (e) {
+      // the operator refused before co-signing (e.g. the session expired while the wallet was signing):
+      // nothing can reach the chain without its signature, so this record is dead. A network error may
+      // hide a deposit that was sent, so it stays 'opening' and waitOpen finds out.
+      const status = (e as { status?: number }).status;
+      if (status !== undefined && status >= 400 && status < 500) {
+        rec.status = 'failed';
+        await this.persist(rec);
+      }
+      throw e;
+    }
     await this.client.cache.markTransactions(signed);
     onProgress?.('deposit sent');
     await this.waitOpen(rec);

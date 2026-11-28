@@ -78,7 +78,7 @@ Requirements: Node 22, Docker, a funded **testnet** key.
    cd apps/server && npx tsx scripts/dev-wallet.ts
    ```
 
-Session settings (env): `D_CHALLENGE` (86400 s; use about 120 for tests), `SESSION_IDLE` (1800 s, after which the operator closes an idle session on its own), `MIN_DEPOSIT_CKB` (100), `MAX_DEPOSIT_CKB` (2000), `MAX_SESSION_HOUSE_CKB` (2500, which caps the max bet at 20 CKB). Each open session holds one house cell of 125 × max bet + 61 CKB, so split the operator balance into enough cells for the sessions you expect at once.
+Session settings (env): `D_CHALLENGE` (86400 s; use about 120 for tests), `SESSION_IDLE` (1800 s, after which the operator closes an idle session on its own), `SESSION_COMMIT_TIMEOUT` (900 s the operator holds a table while the wallet signs the deposit; passkey wallets can take minutes), `MIN_DEPOSIT_CKB` (100), `MAX_DEPOSIT_CKB` (2000), `MAX_SESSION_HOUSE_CKB` (2500, which caps the max bet at 20 CKB). Each open session holds one house cell of 125 × max bet + 61 CKB, so split the operator balance into enough cells for the sessions you expect at once.
 
 Other server settings (env): `PORT`, `DATABASE_URL`, `CKB_RPC_URL`, `CORS_ORIGIN` (comma-separated origins allowed), `MAX_COLLATERAL_CKB` (2500), `MIN_STAKE_CKB` (10, single games), `SESSION_MIN_STAKE_CKB` (1), `COMMIT_TIMEOUT`, `WATCH_INTERVAL_MS`.
 
